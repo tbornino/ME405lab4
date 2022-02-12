@@ -27,7 +27,6 @@ with serial.Serial(_port, 115200, timeout=1) as ser_port:
     time.sleep(1)
     ser_port.write(b'\x04')
     # Receive data from the Nucleo and process it into 2 lists
-#     _xs = []
     voltages = []
     while True:
         line = ser_port.readline()
@@ -43,10 +42,7 @@ with serial.Serial(_port, 115200, timeout=1) as ser_port:
 # Plot step response
 times = range(2000)
 pyplot.plot(times, voltages)
-# Plot line for setpoint
-# _t_max = _xs[-1]
-# _set_point_ticks = _set_point * _PPR / 360
-# pyplot.plot([0, _t_max], [_set_point_ticks, _set_point_ticks], 'r--')
-pyplot.xlabel("time [ms]")
-pyplot.ylabel("voltage [V]")
+
+pyplot.xlabel("Time [ms]")
+pyplot.ylabel("Voltage [V]")
 pyplot.show()
