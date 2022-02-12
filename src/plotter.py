@@ -12,37 +12,36 @@ from matplotlib import pyplot
 import serial
 import time
 
+## Serial port used to communicate with the Nucleo
+port = "COM3"
 
-_PPR = 256*4*16
-_set_point = 360 # deg
-
-# Open serial port with the Nucleo
-_port = "COM3"
-
-with serial.Serial(_port, 115200, timeout=1) as ser_port:
+with serial.Serial(port, 115200, timeout=1) as ser_port:
     # Reset the Nucleo and start its program
     ser_port.write(b'\x03')
     time.sleep(1)
     ser_port.write(b'\x02')
     time.sleep(1)
     ser_port.write(b'\x04')
-    # Receive data from the Nucleo and process it into 2 lists
+    ## List to store voltage data in
     voltages = []
     while True:
+        ## Line of data from serial port
         line = ser_port.readline()
+        # Echo serial received so we can see what is transmitted
         print(line.decode('utf-8'), end='')
         if line[:4] == b'Done':
             break
         try:
+            ## Individual voltage reading
             voltage = float(line.strip())
         except (ValueError, IndexError):
             continue
         voltages.append(voltage)
         
 # Plot step response
+## List of times from 0 to 1999 ms
 times = range(2000)
 pyplot.plot(times, voltages)
-
 pyplot.xlabel("Time [ms]")
 pyplot.ylabel("Voltage [V]")
 pyplot.show()

@@ -11,17 +11,14 @@ using a real time scheduler.
 """
 import pyb
 from pyb import ADC
-import print_task
-import task_share
-import cotask
-import gc
 import micropython
+import task_share
 
 micropython.alloc_emergency_exception_buf(100)
-# State Variables for pin
-_PIN_LOW = 0
-_PIN_HIGH = 1
+
+## Logic high voltage (max used for ADC)
 V_CC = 3.3
+
 def interruptFCN(IRQ_src):
     '''!
     This interrupt method reads the ADC output for the voltage across the
@@ -29,64 +26,35 @@ def interruptFCN(IRQ_src):
     
     @param IRQ_src The return location after ISR is complete.
     '''
-    
-#     print("interrupt")
-#     try:
     pin_reading_queue.put(adc.read())
-#         print_task.put('interrupt')
-#     except TypeError:
-#         print(adc.read(), 'TypeError')
-
-        
-# def step_responseFCN():
-#     '''!
-#     This generator toggles the pin state between high and low.
-#     '''
-#     state = _PIN_LOW
-#     while True:
-#         print('in SR')
-#         if state == _PIN_LOW:
-#             pinC1.high()
-#             state = _PIN_HIGH
-#         elif state == _PIN_HIGH:
-#             pinC1.low()
-#             state = _PIN_LOW
-#         yield(state)
 
 if __name__ == "__main__":
-    #Create the queue
+    ## The queue for ADC readings (2s long)
     pin_reading_queue = task_share.Queue('H', 2000, thread_protect = True,
                                          overwrite = False, name = "Pin C0 Readings")
-# 
-#     #create the pins and timer objects
+    
+    ## Pin C0, used to read voltage of RC circuit
     pinC0 = pyb.Pin(pyb.Pin.cpu.C0)
+    ## Pin C1, used as input to RC circuit (toggled for step response)
     pinC1 = pyb.Pin(pyb.Pin.cpu.C1, pyb.Pin.OUT_PP)
+    ## Timer to run interrupt on
     tim1 = pyb.Timer(1, freq = 1000)
-#     
-#     # initiate the task to toggle the pin between high and low
-#     task_step = cotask.Task (step_responseFCN, name = 'Step Response', priority = 0, 
-#                          period = 2000, profile = True, trace = False)
-#     
-#     # Initialize the ADC and ISR to run at timer frequency
+
+    ## ADC used to measure voltage across RC circuit
     adc = ADC(pinC0)
+    # Set ISR to run at timer frequency
     tim1.callback(interruptFCN)
+    # Toggle pin high for step response
     pinC1.high()
+    # Wait until the queue of values is full
     while not pin_reading_queue.full():
         pass
+    # Disable the interrupt so we can print the data
     tim1.callback(None)
+    # Print the data, converted to voltage values for plotting
     while pin_reading_queue.any():
         print(pin_reading_queue.get() * V_CC / 4095)
+    # Print this so we know when to stop plotting
     print("Done")
+    # Toggle pin low for next time
     pinC1.low()
-    
-    # Add toggle to task list and run garbage collector
-#     cotask.task_list.append(task_step)
-#     gc.collect ()
-#     
-#     while True:
-# #         print('in main loop')
-#         try:
-#             cotask.task_list.pri_sched ()
-#         except KeyboardInterrupt:
-#             print('Keyboard interrupt')
-#             break
