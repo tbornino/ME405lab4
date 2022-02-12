@@ -11,6 +11,11 @@ our system time constant and compare the values and see if they are within typic
 
 
 ## Step Response Plots
-| ![Step Response 1: RC = 0.3](plots/annotated.png) |
+| ![Step Response 1: RC = 0.359 sec](plots/annotated.png) |
 |:--:|
-|**Figure 1: Task Run Rate = 10ms**|
+|**Figure 1: Annotated plot to show time constant value of RC Circuit**|
+
+Based on the plot and graphically representing our time constant, we saw our experimental time constant was a value of 359ms. This is 
+only 59ms off from our mathematical time constant of 300ms and that is about 21% error. Although this error is still within expected tolerances,
+it's important to note that the resistor value we chose was 100 Kohms instead of ~90 Kohms since it was the closest resistor value available
+to us in lab. So the time constant would be even closer to 300ms if we had the right resistor.
