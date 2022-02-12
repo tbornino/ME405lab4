@@ -27,28 +27,26 @@ with serial.Serial(_port, 115200, timeout=1) as ser_port:
     time.sleep(1)
     ser_port.write(b'\x04')
     # Receive data from the Nucleo and process it into 2 lists
-    _xs = []
-    _ys = []
+#     _xs = []
+    voltages = []
     while True:
-        _line = ser_port.readline()
-        print(_line.decode('utf-8'), end='')
-        if _line == b'Done!\r\n':
+        line = ser_port.readline()
+        print(line.decode('utf-8'), end='')
+        if line[:4] == b'Done':
             break
-        _cells = _line.split(b',')
         try:
-            _x = float(_cells[0].strip())
-            _y = float(_cells[1].strip())
+            voltage = float(line.strip())
         except (ValueError, IndexError):
             continue
-        _xs.append(_x)
-        _ys.append(_y)
+        voltages.append(voltage)
         
 # Plot step response
-pyplot.plot(_xs, _ys)
+times = range(2000)
+pyplot.plot(times, voltages)
 # Plot line for setpoint
-_t_max = _xs[-1]
-_set_point_ticks = _set_point * _PPR / 360
-pyplot.plot([0, _t_max], [_set_point_ticks, _set_point_ticks], 'r--')
+# _t_max = _xs[-1]
+# _set_point_ticks = _set_point * _PPR / 360
+# pyplot.plot([0, _t_max], [_set_point_ticks, _set_point_ticks], 'r--')
 pyplot.xlabel("time [ms]")
-pyplot.ylabel("position [ticks]")
+pyplot.ylabel("voltage [V]")
 pyplot.show()
