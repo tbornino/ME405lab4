@@ -12,11 +12,13 @@ from matplotlib import pyplot
 import serial
 import time
 
+
 _PPR = 256*4*16
 _set_point = 360 # deg
 
 # Open serial port with the Nucleo
 _port = "COM3"
+
 with serial.Serial(_port, 115200, timeout=1) as ser_port:
     # Reset the Nucleo and start its program
     ser_port.write(b'\x03')
@@ -40,6 +42,7 @@ with serial.Serial(_port, 115200, timeout=1) as ser_port:
             continue
         _xs.append(_x)
         _ys.append(_y)
+        
 # Plot step response
 pyplot.plot(_xs, _ys)
 # Plot line for setpoint

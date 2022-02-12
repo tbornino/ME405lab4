@@ -1,7 +1,7 @@
 """!
 @file main.py
-    This file contains a program capable of running multiple tasks simultaneously
-    using a real time scheduler. 
+This file contains a program capable of running multiple tasks simultaneously
+using a real time scheduler. 
 
 @author             Tori Bornino
 @author             Jackson McLaughlin
@@ -16,17 +16,28 @@ import task_share
 import cotask
 import gc
 
+# State Variables for pin
 _PIN_LOW = 0
 _PIN_HIGH = 1
 
 def interruptFCN(IRQ_src):
+    '''!
+    This interrupt method reads the ADC output for the voltage across the
+    capacitor.
+    
+    @param IRQ_src The return location after ISR is complete.
+    '''
     try:
         pin_reading_queue.put(adc.read())
         print_task.put('interrupt')
-        print('Interrupted')
-    except TypeError as terr:
+    except TypeError:
         print(adc.read(), 'TypeError')
+
+        
 def step_responseFCN():
+    '''!
+    This generator toggles the pin state between high and low.
+    '''
     state = _PIN_LOW
     while True:
         print('in SR')
@@ -48,12 +59,15 @@ if __name__ == "__main__":
     pinC1 = pyb.Pin(pyb.Pin.cpu.C1, pyb.Pin.OUT_PP)
     tim1 = pyb.Timer(1, freq = 1000)
     
+    # initiate the task to toggle the pin between high and low
     task_step = cotask.Task (step_responseFCN, name = 'Step Response', priority = 0, 
                          period = 2000, profile = True, trace = False)
-
+    
+    # Initialize the ADC and ISR to run at timer frequency
     adc = ADC(pinC0)
     tim1.callback(interruptFCN)
     
+    # Add toggle to task list and run garbage collector
     cotask.task_list.append(task_step)
     gc.collect ()
     
