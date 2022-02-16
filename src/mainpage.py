@@ -15,7 +15,7 @@
                         We were supplied with cotask.py, task_share.py, and
                         print_task.py to implement
                         a scheduler to run our step response. The ISR was 
-                        implemented in @ref main "main" and was used to read
+                        implemented in main.py and was used to read
                         from the ADC.
                          
     @author             Tori Bornino
