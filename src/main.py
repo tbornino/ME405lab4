@@ -1,7 +1,8 @@
 """!
 @file main.py
-This file contains a program capable of running multiple tasks simultaneously
-using a real time scheduler. 
+This file contains a program which runs a step response on an RC circuit and
+takes data on the voltage every 1ms using an interrupt. This is then sent to
+a PC over serial, so it can be plotted.
 
 @author             Tori Bornino
 @author             Jackson McLaughlin

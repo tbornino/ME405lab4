@@ -1,11 +1,10 @@
 '''!@file       plotter.py
     The main code to run on the PC to run and plot a step response on
-    a motor. Includes functionality to set the setpoint and controller gain.
-    The data is exchanged with the microcontroller over serial.
+    an RC circuit. The data is exchanged with the microcontroller over serial.
     @author     Tori Bornino
     @author     Jackson McLaughlin
     @author     Zach Stednitz
-    @date       January 27, 2022
+    @date       February 17, 2022
 '''
 
 from matplotlib import pyplot
