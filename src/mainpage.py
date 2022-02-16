@@ -14,15 +14,12 @@
     @section sec_sch    Task Scheduler in Main
                         We were supplied with cotask.py, task_share.py, and
                         print_task.py to implement
-                        a scheduler to run our step response. The 
-                        @ref motor.MotorDriver "Motor Driver", 
-                        @ref encoder.EncoderDriver "Encoder Driver", and
-                        @ref pidcontroller.PIDController "PID Controller"
-                        were developed in Lab 2 whose documentation can be
-                        found at: https://tbornino.github.io/ME405lab2/
+                        a scheduler to run our step response. The ISR was 
+                        implemented in @ref main "main" and was used to read
+                        from the ADC.
                          
     @author             Tori Bornino
     @author             Jackson McLaughlin
     @author             Zach Stednitz
-    @date               February 10, 2022
+    @date               February 17, 2022
 '''
